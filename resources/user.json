@@ -1,11 +1,11 @@
 {
-	"email": "UseszddrEsdssddmail55",
-	"password": "UssdezdsdsdrPassword55",
-	"surname": "UserSszdsddsdurname55",
-	"firstName": "UseszdsddsdrFirstName55",
-	"lastName": "UsersdlsszdddastName55",
-	"phone": "UserPsdhszdsddosdne55",
-	"adress": "UsesdrsdzdsdAdress55",
-	"city": "UsersdCzdsdsdty55",
-	"zip": "UserszdsddZsdip55"
+	"email": "email",
+	"password": "password",
+	"surname": "surname",
+	"firstName": "firstName",
+	"lastName": "lastName",
+	"phone": "phone",
+	"adress": "adress",
+	"city": "city",
+	"zip": "zip"
 }
