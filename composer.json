@@ -1,0 +1,15 @@
+{
+  "name": "cyril/worlds-of-game-api",
+  "authors": [
+    {
+      "name": "seeren",
+      "email": "consultant@seeren.fr"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Wog\\": "src/"
+    }
+  },
+  "require": {}
+}
