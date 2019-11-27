@@ -71,7 +71,7 @@ You need to folow the `open/closed principle` for routing.
 * Project can use this configuration file for trigger an controller action
 
 *This principle can be described by the following deployment diagram:*
-![diagram](deployment.png)
+![diagram](https://raw.githubusercontent.com/seeren/worlds-of-game-api/master/resources/tp-s2/deployment.png)
 
 
 [@see file_get_contents](https://www.php.net/manual/fr/function.file-get-contents.php)
@@ -79,7 +79,7 @@ You need to folow the `open/closed principle` for routing.
 [@see json_decode](https://www.php.net/manual/fr/function.json-decode.php)
 
 *This principle can be described by the following activity diagram:*
-![diagram](activity.png)
+![diagram](https://raw.githubusercontent.com/seeren/worlds-of-game-api/master/resources/tp-s2/activity.png)
 
 * 📝 The api must use a configuration file for routing
 * 📝 The configuration file must store a collection of route
