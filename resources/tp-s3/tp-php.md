@@ -6,101 +6,98 @@ You have 7 hours to realize the following case.
 
 ___
 
-## `PHP and Web Services`
+## `Open/Closed`
 
-The job is about to `repeat endpoint creation` and provide `routing`:
+You need to folow the `open/closed principle`.
 
-* ➡️ You need to handle the `client request`: [@see w3.org request](https://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html)
-
-* 🌐 You need to follow REST `principles`: [@see wiki rest](https://fr.wikipedia.org/wiki/Representational_state_transfer#Appliqu%C3%A9_aux_services_web)
-
-* ⬅️ You need to `send a response`: [@see w3.org response](https://www.w3.org/Protocols/rfc2616/rfc2616-sec6.html)
+[@see open/closed](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle)
 
 
-### 👪 Login endpoint
-An uri with parameters for a method have to `provide an user`:
+### 🚦 Routing
 
-```
-path: /login?email=USER_EMAIL&password=USER_PASSWORD
+You need to enforce your routing.
+
+#### 👪 User endpoint
+
+An uri for a method have to `provide an user`:
+
+```bash
+uri: /users/4
 method: GET
-controller: Wog\Controler\Api\LoginController
-action: login
 ```
 
-* 📝 The api must provide an `user` for the `route` described
+* 📝 The api must provide an `user` for an id
 * 📝 The api must repond with a `404` status code for non existing user
 * 📝 The api must repond with a `200` status code for existing user
 * 📝 The api must repond with a `json` body of the `retrieved user`
 
 
-#### Password
+An uri for a method have to `delete an user`:
 
-**After you provide the user for his email and his password**, take care about `password` storage.
-
-* 📝 At `creation`:
-    * The api must `hash password` and do not store clear value
-* 📝 At `login`:
-    * The api must find user for a `hashed password`
-
-
-[@see password-hash](https://www.php.net/manual/fr/function.password-hash.php)
-
-[@see password-verify](https://www.php.net/manual/fr/function.password-verify.php)
-
-#### Token
-
-**After you provide hash the user password**, take care about `token` storage.
-
-* 📝 At `creation`:
-    * The api must hash token with the password value
-
-[@see md5](https://www.php.net/manual/fr/function.md5.php)
-
-
-### 🚦 Routing
-
-
-> At the moment when you add an endpoint you must add code in your `entry point` 
-
-You need to folow the `open/closed principle` for routing.
-
-[@see open/closed](https://en.wikipedia.org/wiki/Open%E2%80%93closed_principle)
-
-* An endpoint can be described by a route
-* Routes can be stored in a configuration file
-* Project can use this configuration file for trigger an controller action
-
-*This principle can be described by the following deployment diagram:*
-![diagram](https://raw.githubusercontent.com/seeren/worlds-of-game-api/master/resources/tp-s2/deployment.png)
-
-
-[@see file_get_contents](https://www.php.net/manual/fr/function.file-get-contents.php)
-
-[@see json_decode](https://www.php.net/manual/fr/function.json-decode.php)
-
-*This principle can be described by the following activity diagram:*
-![diagram](https://raw.githubusercontent.com/seeren/worlds-of-game-api/master/resources/tp-s2/activity.png)
-
-* 📝 The api must use a configuration file for routing
-* 📝 The configuration file must store a collection of route
-* 📝 A route have a least a path, method, controller and action
-
-#### Tips
-
-Class identifier can be dynamic
-```php
-$className = "Foo";
-$object = new $className();
+```bash
+uri: /users/4?token=USER_TOKEN
+method: DELETE
 ```
-Method identifier can be dynamic
+
+* 📝 The api must delete an `user` for an id
+* 📝 The api must repond with a `401` status code if there is no token
+* 📝 The api must repond with a `403` status code if the token does not belong to the user
+* 📝 The api must repond with a `202` status code for delete success
+* 📝 The api must repond with a `json` body of the `deleted user`
+
+**You have to capture parts of regular expressions:**
+
+[@see preg_match ](https://www.php.net/manual/fr/function.preg-match.php)
+
+> Look at third optionnal parameters and capture parenthesis
+
+Example
 ```php
-$methodName = "read";
-$object->$methodName();
+preg_match("#(\d)#", "Hello 2 World", $match);
+var_dump($matches);
 ```
-[@see dynamic language features](https://www.php.net/manual/fr/language.namespaces.dynamic.php)
+Output
+``` php
+array(2) {
+  [0]=>
+  string(1) "2"
+  [1]=>
+  string(1) "2"
+}
+```
+
+**You should pass method arguments from an array**
+
+[@see splat operator](https://www.php.net/manual/en/functions.arguments.php#functions.variable-arg-list)
+
+Example
+```php
+function foo($a, $b) {
+    var_dump($a, $b);
+}
+foo(... ["Hello", "World"]);
+```
+Output
+``` php
+string(5) "Hello"
+string(5) "World"
+```
+
+**You have to implements following interface.**
+
+![diagram](https://raw.githubusercontent.com/seeren/worlds-of-game-api/master/resources/tp-s3/class.png)
+
+### 🛢️ Database
+
+You need to enforce your database configuration.
+
+* 📝 The Manager must use a configuration file to construct PDO
+
+![diagram](https://raw.githubusercontent.com/seeren/worlds-of-game-api/master/resources/tp-s3/deployment.png)
+
 ___
 ## 🕕 Manage your time
 
-You have one thematic, you need to create your ow api, focus and try to find solutions for improve your skill.
+You need to enforce your own api, these manipulations do not open on others.
 
 ## 🎯 Let's focus
