@@ -2,7 +2,7 @@
 
 namespace Wog\Http;
 
-class Request
+class Request implements RequestInterface
 {
 
     private
@@ -38,14 +38,13 @@ class Request
         $this->headers = [];
         foreach ($_SERVER as $key => $value) {
             $keys = explode("_", $key);
-            if ("HTTP" !== $keys[0]) {
-                continue;
+            if ("HTTP" === $keys[0]) {
+                array_shift($keys);
+                foreach ($keys as $subKey => $subValue) {
+                    $keys[$subKey] = ucfirst(strtolower($subValue));
+                }
+                $this->headers[implode("-", $keys)] = $value;
             }
-            array_shift($keys);
-            foreach ($keys as $subKey => $subValue) {
-                $keys[$subKey] = ucfirst(strtolower($subValue));
-            }
-            $this->headers[implode("-", $keys)] = $value;
         }
         $this->get = $_GET;
         $this->post = $_POST;

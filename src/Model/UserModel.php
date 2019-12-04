@@ -220,24 +220,20 @@ class UserModel implements \JsonSerializable
     }
 
     /**
-     * Specify data which should be serialized to JSON
-     * @link https://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     * which is a value of any type other than a resource.
-     * @since 5.4.0
+     * @inheritDoc
      */
     public function jsonSerialize()
     {
         return [
             "email" => $this->email,
             "surname" => $this->surname,
-            "firstName" => $this->firstName,
-            "lastName" => $this->lastName,
+            "firstName" => array_key_exists("first_name", $this) ? $this->first_name : $this->firstName,
+            "lastName" => array_key_exists("last_name", $this) ? $this->last_name : $this->lastName,
             "phone" => $this->phone,
             "adress" => $this->adress,
             "city" => $this->city,
             "zip" => $this->zip,
-            "token" => $this->token
         ];
     }
+
 }

@@ -1,5 +1,5 @@
 {
-  "name": "cyril/worlds-of-game-api",
+  "name": "seeren/worlds-of-game-api",
   "authors": [
     {
       "name": "seeren",
@@ -10,6 +10,5 @@
     "psr-4": {
       "Wog\\": "src/"
     }
-  },
-  "require": {}
+  }
 }

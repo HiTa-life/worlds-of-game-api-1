@@ -2,40 +2,29 @@
 
 namespace Wog\Controller\Api;
 
-use Wog\Http\Request;
-use Wog\Http\Response;
+use Wog\Controller\Controller;
+use Wog\Http\RequestInterface;
+use Wog\Http\ResponseInterface;
 use Wog\Model\UserModel;
 use Wog\Repository\UserRepository;
 
-class UserController
+class UserController extends Controller implements ApiControllerInterface
 {
 
-    private
-        /**
-         * @var Request
-         */
-        $request,
-        /**
-         * @var Response
-         */
-        $response;
-
     /**
-     * @param Request $request
-     * @param Response $response
+     * @inheritDoc
      */
     public function __construct(
-        Request $request,
-        Response $response)
+        RequestInterface $request,
+        ResponseInterface $response)
     {
-        $this->request = $request;
-        $this->response = $response;
+        parent::__construct($request, $response);
     }
 
     /**
-     * @return Response
+     * @inheritDoc
      */
-    public function create(): Response
+    public function create(): ResponseInterface
     {
         try {
             $user = new UserModel($this->request->json());
@@ -49,9 +38,11 @@ class UserController
                 || !$user->getSurname()
                 || !$user->getZip()) {
                 $this->response->setStatus(422, "Unprocessable Entity");
-                $this->response->setError("User incomplete: missing parameters");
+                $this->response->setError("Missing User parameters");
                 return $this->response;
             }
+            $user->setPassword(password_hash($user->getPassword(), PASSWORD_DEFAULT));
+            $user->setToken(md5($user->getPassword()));
             $repository = new UserRepository();
             $repository->insert($user);
             $this->response->setStatus(201, "Created");
@@ -66,20 +57,31 @@ class UserController
         return $this->response;
     }
 
-    public function read(): Response
+    /**
+     * @inheritDoc
+     */
+    public function update(): ResponseInterface
+    {
+        // TODO: Implement retrieve() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function delete(): ResponseInterface
+    {
+        // TODO: Implement retrieve() method.
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function retrieve(): ResponseInterface
     {
         $repository = new UserRepository();
         $users = $repository->select();
         $this->response->setBody(json_encode($users));
         return $this->response;
-    }
-
-    public function update(): Response
-    {
-    }
-
-    public function delete(): Response
-    {
     }
 
 }

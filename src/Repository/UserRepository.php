@@ -2,6 +2,7 @@
 
 namespace Wog\Repository;
 
+use Wog\Database\Manager;
 use Wog\Model\UserModel;
 
 class UserRepository
@@ -14,26 +15,15 @@ class UserRepository
     {
     }
 
-    private function getPdo(): \PDO
-    {
-        return new \PDO(
-            "mysql:dbname=worlds_of_game;host=localhost;charset=utf8",
-            "root",
-            "", [
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
-            ]
-        );
-    }
-
     /**
      * @param UserModel $user
+     * @return void
      *
      * @throws \PDOException for user exists or errors
      */
     public function insert(UserModel $user): void
     {
-        $dbh = $this->getPdo();
-        $sth = $dbh->prepare(
+        $sth = Manager::getConnection()->prepare(
             "INSERT INTO"
             . " `users`("
             . "`email`, `password`, `surname`, `first_name`, `last_name`, `phone`, `adress`, `city`, `zip`, `token`"
@@ -49,21 +39,32 @@ class UserRepository
         $sth->bindValue(":adress", $user->getAdress());
         $sth->bindValue(":city", $user->getCity());
         $sth->bindValue(":zip", $user->getZip());
-        $sth->bindValue(":token", $user->getEmail());
+        $sth->bindValue(":token", $user->getToken());
         $sth->execute();
-        $user->setToken($user->getEmail());
     }
 
     /**
-     * @return array of UserModel
+     * @return array UserModel[]
      */
     public function select(): array
     {
-        $dbh = $this->getPdo();
-        $sth = $dbh->prepare("SELECT * FROM `users`");
+        $sth = Manager::getConnection()->prepare("SELECT * FROM `users`");
         $sth->setFetchMode(\PDO::FETCH_CLASS, UserModel::class);
         $sth->execute();
         return $sth->fetchAll();
+    }
+
+    /**
+     * @param string $email
+     * @return UserModel
+     */
+    public function selectByEmail(string $email): UserModel
+    {
+        $sth = Manager::getConnection()->prepare("SELECT * FROM `users` WHERE `email`=:email");
+        $sth->setFetchMode(\PDO::FETCH_CLASS, UserModel::class);
+        $sth->bindValue(":email", $email);
+        $sth->execute();
+        return $sth->fetch();
     }
 
 }

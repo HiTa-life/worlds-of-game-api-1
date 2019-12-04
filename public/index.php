@@ -2,30 +2,41 @@
 
 use Wog\Http\Request;
 use Wog\Http\Response;
-use Wog\Controller\Api\UserController;
 
 require "./../vendor/autoload.php";
 
+$response = new Response();
+$request = new Request();
+
 try {
-    $response = new Response();
-    $request = new Request();
-    if ("/users" === $request->getUri()) {
-        $controller = new UserController($request, $response);
-        if ("get" === $request->getMethod()) {
-            $response = $controller->read();
-        } elseif ("post" === $request->getMethod()) {
-            $response = $controller->create();
-        } else {
-            $response->setStatus(405, "Method Not Allowed");
-            $response->setError("The method: " . $request->getMethod() . " is Not Allowed");
-        }
-    } else {
-        $response->setStatus(404, "Not Found");
-        $response->setError("The URI: " . $request->getUri() . " is Not Found");
+    if ("options" === $request->getMethod()) {
+        $response->setStatus(200, "OK");
+        throw new OutOfRangeException();
     }
+    $routes = json_decode(file_get_contents("../config/routes.json"));
+    foreach ($routes as $primary) {
+        if (!preg_match("#^$primary->path$#", $request->getUri())) {
+            continue;
+        }
+        foreach ($routes as $secondary) {
+            if ($secondary->path === $primary->path && $request->getMethod() === $secondary->method) {
+                $response = (new $secondary->controller($request, $response))->{$secondary->action}();
+                throw new LogicException();
+            }
+        }
+        $response->setStatus(405, "Method Not Allowed");
+        $response->setError("Method: " . $request->getMethod() . " Not Allowed");
+        throw new LogicException();
+    }
+    $response->setStatus(404, "Not Found");
+    $response->setError("Uri: " . $request->getUri() . " Not Found");
+} catch (OutOfRangeException $exc) {
+} catch (LogicException $exc) {
+    unset($routes);
 } catch (Throwable $exc) {
     $response->setStatus(500, "Internal Server Error");
     $response->setError($exc->getMessage() . "(" . $exc->getFile() . "[" . $exc->getLine() . "])");
 }
 
+unset($request);
 $response->send();

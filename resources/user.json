@@ -1,11 +1,11 @@
 {
-	"email": "email",
-	"password": "password",
-	"surname": "surname",
-	"firstName": "firstName",
-	"lastName": "lastName",
-	"phone": "phone",
-	"adress": "adress",
-	"city": "city",
-	"zip": "zip"
+	"email": "qux",
+	"password": "qux",
+	"surname": "qux",
+	"firstName": "qux",
+	"lastName": "qux",
+	"phone": "qux",
+	"adress": "qux",
+	"city": "qux",
+	"zip": "qux"
 }

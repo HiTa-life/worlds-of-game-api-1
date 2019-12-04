@@ -2,33 +2,23 @@
 
 namespace Wog\Http;
 
-class Response
+class Response extends HttpResource implements ResponseInterface
 {
 
-    private
-        /**
-         * @var int
-         */
-        $statusCode,
-        /**
-         * @var string
-         */
-        $statusText,
-        /**
-         * @var array
-         */
-        $headers,
-        /**
-         * @var string
-         */
-        $body;
+    use Traits\StatusAwareTrait;
+    use Traits\BodyAwareTrait;
+    use Traits\SenderTrait;
 
     public function __construct()
     {
+        parent::__construct();
         $this->statusCode = 200;
         $this->statusText = "OK";
         $this->headers = [
-            "Content-Type" => "application/json"
+            "Content-Type" => "application/json",
+            "Access-Control-Allow-Origin" => "*",
+            "Access-Control-Allow-Methods" => "GET,POST,PUT,DELETE,OPTIONS",
+            "Access-Control-Allow-Headers" => "Content-Type",
         ];
         $this->body = "{}";
     }
@@ -42,66 +32,6 @@ class Response
             "code" => $this->statusCode,
             "message" => utf8_encode($message)
         ]));
-    }
-
-
-    /**
-     * @param int $statusCode
-     * @param string $statusText
-     */
-    public function setStatus(int $statusCode, string $statusText): void
-    {
-        $this->statusCode = $statusCode;
-        $this->statusText = $statusText;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus(): string
-    {
-        return "$this->statusCode $this->statusText";
-    }
-
-    /**
-     * @return array
-     */
-    public function getHeaders(): array
-    {
-        return $this->headers;
-    }
-
-    /**
-     * @param array $headers
-     */
-    public function setHeaders(array $headers): void
-    {
-        $this->headers = $headers;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBody(): string
-    {
-        return $this->body;
-    }
-
-    /**
-     * @param string $body
-     */
-    public function setBody(string $body): void
-    {
-        $this->body = $body;
-    }
-
-    public function send(): void
-    {
-        header("HTTP/1.1 " . $this->getStatus());
-        foreach ($this->getHeaders() as $key => $value) {
-            header("$key: $value");
-        }
-        echo $this->getBody();
     }
 
 }
